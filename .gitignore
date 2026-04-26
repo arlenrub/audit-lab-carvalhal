@@ -1,0 +1,10 @@
+# Ambientes Virtuais
+venv/
+
+# Arquivos de Teste e Logs
+app.py
+nohup.out
+backup_antes_da_iav2.py
+
+# Segredos (NUNCA SUBIR)
+.streamlit/secrets.toml
