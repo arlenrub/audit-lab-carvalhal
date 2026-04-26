@@ -1,0 +1,105 @@
+{
+  "name": "alerta-auditoria",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alerta-auditoria",
+        "options": {}
+      },
+      "id": "81b0a6d6-5000-4588-834e-6acc131b8832",
+      "name": "Webhook Supabase",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        -752,
+        -240
+      ],
+      "webhookId": "SEU_WEBHOOK_ID_AQUI"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.record.status }}",
+              "value2": "🔴 Crítico"
+            }
+          ]
+        }
+      },
+      "id": "f35dbf90-86d2-4ed7-b589-8d85ce5a6bcb",
+      "name": "É Crítico?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://SEU_IP_OU_DOMINIO:8080/message/sendText/SUA_INSTANCIA",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "SUA_API_KEY_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"SEU_NUMERO_AQUI\",\n  \"options\": {\n    \"delay\": 1200,\n    \"presence\": \"composing\"\n  },\n  \"text\": \"🚨 *ALERTA DE AUDITORIA CRÍTICO* 🚨\\n\\nO sistema interceptou uma divergência grave agora:\\n\\n📍 *Unidade:* {{ $json.body.record.unidade }}\\n⚠️ *Motivo:* {{ $json.body.record.tipo_divergencia }}\\n💰 *Valor:* R$ {{ $json.body.record.valor_envolvido }}\\n\\n📊 *Acesse o painel Carvalhal Audit Lab para investigar as evidências:*\\n🔗 https://tinyurl.com/painel-carvalhal\"\n}",
+        "options": {}
+      },
+      "id": "e633e9af-1113-4beb-9aed-e6dde3267c2b",
+      "name": "WhatsApp (Evolution)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -256,
+        -400
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Supabase": {
+      "main": [
+        [
+          {
+            "node": "É Crítico?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Crítico?": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp (Evolution)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "799f0e83-fdb8-4997-86a6-07b7540a0120",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "SUA_INSTANCE_ID_AQUI"
+  },
+  "id": "NtCV84FWXU997f90",
+  "tags": []
+}
